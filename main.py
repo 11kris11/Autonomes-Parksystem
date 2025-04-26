@@ -2,58 +2,72 @@ import pygame
 from polygon import Polygon
 from intro import Intro
 from spawnArea import spawnArea
+import random
+from car import Car
 
 # pygame setup
 pygame.init()
 height = 900
 width = 1600
 screen = pygame.display.set_mode((width, height))
-screen2 = pygame.Surface((width, height), pygame.SRCALPHA)
+screen1 = pygame.Surface((width, height), pygame.SRCALPHA)
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 60)
+directions = ["left", "right", "up", "down"]
+
 
 # Auswahl des poligons und zeichnen der parkenden Autos
 selectedPolygon = Intro(screen, font).run()
-screen.fill("lightgrey")
+screen1.fill("lightgrey")
 
-polygon = Polygon(screen, width, height, selectedPolygon)
+# Definition der Unterschiedlichkeiten zwischen Polygonen
+polygon = Polygon(screen1, width, height, selectedPolygon)
 if selectedPolygon == 1:
-        polygon.draw_polygon_1(screen)
+    polygon.draw_polygon_1(screen1)                                 
+    screen2 = pygame.Surface((125, 225), pygame.SRCALPHA)           # Definition der Surface für das Auto mit den perfekten Masen
+    direction = directions[random.randint(0,100) % 2 + 2]           # zufällige Wahl von "up" oder "down"
+    offset_y = 112                                                  # Hälfte der länge des Autos
+    offset_x = 66                                                   # Hälfte der breite des Autos
 elif selectedPolygon == 2:
-    polygon.draw_polygon_2(screen)
-polygon.park_cars()
+    polygon.draw_polygon_2(screen1)
+    screen2 = pygame.Surface((225, 125), pygame.SRCALPHA)          # Definition der Surface für das Auto mit den perfekten Masen
+    direction = directions[random.randint(0,100) % 2]              # zufällige Wahl von "left" oder "right"
+    offset_y = 66                                                  # Hälfte der breite des Autos
+    offset_x = 112                                                 # Hälfte der länge des Autos
+polygon.park_cars()                    # Nach erfolgreicher Definition kommt die Ausführung
 
 # Definition der spawns
-spawnArea_instance = spawnArea(screen2, selectedPolygon)
+spawnArea_instance = spawnArea(screen1, selectedPolygon)
 showSpawn =  "false"
+x = random.randint(spawnArea_instance.x1 + offset_x, spawnArea_instance.x2 - offset_x) # Definieren des genauen Startpunktes (Zufällig im Spawn
+y = random.randint(spawnArea_instance.y1 + offset_y, spawnArea_instance.y2 - offset_y) # Bereich -> Offset dient zur verkleinerung der Spawns,
+center = (x, y)                                                                        # da Mittelpunkt als Referenz genommen wird)
+
+
+player = Car(0, 0, direction, screen2, "black", "white")
+
 running = True
-player = spawnArea_instance.carToSpawn("left", "black", "white")
-player.draw_parked_car(screen2)
-x = 0
 while running:
     # poll for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_s):
+            if (event.key == pygame.K_s): # Klassisches XOR, falls 1, dann 0, falls 0 dann 1
                 if (showSpawn == "false"):
                     showSpawn = "true"
                 elif (showSpawn == "true"):
                     showSpawn = "false"
+
+    screen.blit(screen1, (0,0)) # Zeichnen des screen1, wo das Polygon drauf ist
+    spawnArea_instance.showSpawn(showSpawn) # Zeige den Spawn an, falls nötig
+
+        
+    player.draw_parked_car(screen2) # Zeichnen auf Surface (bis jetzt noch nicht angezeigt)
+    carSurface = pygame.transform.rotate(screen2, 0) # Rotieren das Surface, falls nötig (Lenkung)
+    carSurface_rect = carSurface.get_rect(center=center) # Zentrum das Autos
     
-    spawnArea_instance.showSpawn(showSpawn)
-    
-    if x < 100:
-        player.moveCarX()
-        x = x + 1
-    
-    
-    screen2.fill((0,0,0,0))
-    
-    player.draw_parked_car(screen2)
-    
-    screen.blit(screen2, (0,0))
+    screen.blit(carSurface, carSurface_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
 
     # Flip the display to put your work on screen
     pygame.display.flip()

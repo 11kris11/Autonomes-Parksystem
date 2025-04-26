@@ -25,24 +25,44 @@ class Car:
         light1 = None 
         light2 = None
         
-        # Körper & Dach
-        body = pygame.Rect(self.x, self.y, self.car_length, self.car_width)
-        roof = pygame.Rect(self.x + 50, self.y + 12.5, self.car_roof_length, self.car_roof_width)
-        pygame.draw.rect(screen, self.color, body, border_radius=15)
-        pygame.draw.rect(screen, self.color2, roof, border_radius=10)
+        if self.direction == "up" or self.direction == "down":
+            body = pygame.Rect(self.x, self.y, self.car_width, self.car_length)
+            roof = pygame.Rect(self.x + 12.50, self.y + 50, self.car_roof_width, self.car_roof_length)
+            pygame.draw.rect(screen, self.color, body, border_radius=15)
+            pygame.draw.rect(screen, self.color2, roof, border_radius=10)
             
-        # Lichter
-        if self.direction == "right":
-            light1 = pygame.Rect(self.x + self.car_length - 20, self.y + self.car_width - 20, 20, 20)
-            light2 = pygame.Rect(self.x + self.car_length - 20, self.y, 20, 20)
-            pygame.draw.rect(screen, "yellow", light1, border_bottom_right_radius=15)
-            pygame.draw.rect(screen, "yellow", light2, border_top_right_radius=15)
-        
-        elif self.direction == "left":
-            light1 = pygame.Rect(self.x, self.y, 20, 20)
-            light2 = pygame.Rect(self.x, self.y + self.car_width - 20, 20, 20)
-            pygame.draw.rect(screen, "yellow", light1, border_top_left_radius=15)
-            pygame.draw.rect(screen, "yellow", light2, border_bottom_left_radius=15)
+            if self.direction == "up":
+                light1 = pygame.Rect(self.x, self.y, 20, 20)
+                light2 = pygame.Rect(self.x + self.car_width - 20, self.y, 20, 20)
+                pygame.draw.rect(screen, "yellow", light1, border_top_left_radius=15)
+                pygame.draw.rect(screen, "yellow", light2, border_top_right_radius=15)
+            
+            elif self.direction == "down":
+                light1 = pygame.Rect(self.x, self.y + self.car_length - 20, 20, 20)
+                light2 = pygame.Rect(self.x + self.car_width - 20, self.y + self.car_length - 20, 20, 20)
+                pygame.draw.rect(screen, "yellow", light1, border_bottom_left_radius=15)
+                pygame.draw.rect(screen, "yellow", light2, border_bottom_right_radius=15)
+
+
+        if self.direction == "right" or self.direction == "left":
+        # Körper & Dach
+            body = pygame.Rect(self.x, self.y, self.car_length, self.car_width)
+            roof = pygame.Rect(self.x + 50, self.y + 12.5, self.car_roof_length, self.car_roof_width)
+            pygame.draw.rect(screen, self.color, body, border_radius=15)
+            pygame.draw.rect(screen, self.color2, roof, border_radius=10)
+                
+            # Lichter
+            if self.direction == "right":
+                light1 = pygame.Rect(self.x + self.car_length - 20, self.y + self.car_width - 20, 20, 20)
+                light2 = pygame.Rect(self.x + self.car_length - 20, self.y, 20, 20)
+                pygame.draw.rect(screen, "yellow", light1, border_bottom_right_radius=15)
+                pygame.draw.rect(screen, "yellow", light2, border_top_right_radius=15)
+            
+            elif self.direction == "left":
+                light1 = pygame.Rect(self.x, self.y, 20, 20)
+                light2 = pygame.Rect(self.x, self.y + self.car_width - 20, 20, 20)
+                pygame.draw.rect(screen, "yellow", light1, border_top_left_radius=15)
+                pygame.draw.rect(screen, "yellow", light2, border_bottom_left_radius=15)
         
 
     def getCarRect(self):

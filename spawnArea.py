@@ -18,18 +18,12 @@ class spawnArea:
             self.x1 = 600
             self.x2 = 1000
             self.y1 = 0
-            self.y2 = 1200
+            self.y2 = 900
         elif polNum == 2:
             self.x1 = 0
             self.x2 = 1600
             self.y1 = 300
             self.y2 = 600
-
-    def carToSpawn(self, direction, color, color2):
-        randX = 100#random.randint(self.x1, self.x2)
-        randY = 200#random.randint(self.y1, self.y2)
-        
-        return Car(randX, randY, direction, self.screen, color, color2)
         
 
     def showSpawn(self, hmm):

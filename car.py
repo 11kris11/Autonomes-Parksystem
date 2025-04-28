@@ -70,7 +70,7 @@ class Car:
     def getCarRect(self):
         return self.car
     
-    def moveCarX(self):
+    def move_forward(self):
         self.x = self.x + 1
 
     def updatePos(self):

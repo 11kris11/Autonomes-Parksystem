@@ -27,7 +27,7 @@ class spawnArea:
         
 
     def showSpawn(self, hmm):
-        if hmm == "true":
+        if hmm:
             pygame.draw.rect(self.screen, "red", (self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1))
-        elif hmm == "false":
+        elif not hmm:
             pygame.draw.rect(self.screen, "grey", (self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1))

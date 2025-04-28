@@ -51,8 +51,8 @@ while running:
                     showSpawn = "true"
                 elif (showSpawn == "true"):
                     showSpawn = "false"
+    carSurface.fill((0,0,0,0))
     carSurface.fill("black")
-    screen.blit(polygonScreen, (0,0))                           # Zeichnen des Polygons
     pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
     spawnArea_instance.showSpawn(showSpawn)                     # Zeige den Spawn an, falls nötig
 
@@ -60,9 +60,11 @@ while running:
     player.updatePos()                                          # player.x und player.y mit center player.center überschreiben
     player.draw_parked_car(carSurface)                          # Zeichnen auf Surface (bis jetzt noch nicht angezeigt)
 
-    #carSurface = pygame.transform.rotate(carSurface, 0)        # Rotieren das Surface, falls nötig (Lenkung)
-    carSurface_rect = carSurface.get_rect(center=(x, y)) # Zentrum das Autos
-    screen.blit(carSurface, carSurface_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+    carSurface_rotated = pygame.transform.rotate(carSurface, 20)        # Rotieren das Surface, falls nötig (Lenkung)
+    carSurface_rotated_rect = carSurface_rotated.get_rect(center=(x, y)) # Zentrum das Autos
 
+    screen.blit(polygonScreen, (0,0))                           # Zeichnen des Polygons
+    screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+    
     pygame.display.flip()
 pygame.quit()

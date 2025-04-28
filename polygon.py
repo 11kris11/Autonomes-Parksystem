@@ -99,3 +99,11 @@ class Polygon:
                     Car(parkingSpacesX[self.toFill - 4], parkingSpacesY[1], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
                 if self.toFill < 4:
                     Car(parkingSpacesX[self.toFill], parkingSpacesY[0], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
+
+    def drawPolygon(self):
+        if self.selectedPolygon == 1:
+            self.draw_polygon_1(self.screen)
+        elif self.selectedPolygon == 2:
+            self.draw_polygon_2(self.screen)
+        else:
+            print("Polygon nicht gespeichert")          # Debug

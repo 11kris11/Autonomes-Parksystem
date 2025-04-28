@@ -11,6 +11,7 @@ class Car:
     color = None
     color2 = None
     car = None
+    center = None
 
     def __init__(self, x, y, direction, screen, color, color2):
         self.x = x
@@ -19,10 +20,11 @@ class Car:
         self.color2 = color2
         self.direction = direction
         self.screen = screen
+        self.center = (x,y)
     
     # Das auto besteht aus zwei Vierecken, die das Dach und den Körper darstellen sollen. Die Lichter sind für die Richtungsorientierung 
     def draw_parked_car(self, screen): 
-        light1 = None 
+        light1 = None
         light2 = None
         
         if self.direction == "up" or self.direction == "down":
@@ -71,4 +73,6 @@ class Car:
     def moveCarX(self):
         self.x = self.x + 1
 
-    
+    def updatePos(self):
+        self.x = self.center[0]
+        self.y = self.center[1]

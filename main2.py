@@ -1,66 +1,68 @@
 import pygame
-import sys
+from polygon import Polygon
+from intro import Intro
+from spawnArea import spawnArea
+import random
 from car import Car
 
+# pygame setup
+pygame.init()
 height = 900
 width = 1600
+screen = pygame.display.set_mode((width, height))
+polygonScreen = pygame.Surface((width, height), pygame.SRCALPHA)
+carSurface = pygame.Surface((500,350), pygame.SRCALPHA)         # Definition der Surface für das Auto mit den perfekten Masen
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 60)                           
+directions = ["left", "right"]                                 # mögliche Richtungen
+direction = directions[random.randint(0,100) % 2]              # zufällige Wahl von "left" oder "right"
+cameraColor = (173, 216, 230, 100)
+ellipse = pygame.Rect(0,0,500,350)
+polygonScreen.fill("lightgrey")
+offset_x = 67
+offset_y = 122
 
-def main():
-    # Pygame initialization
-    pygame.init()
 
-    # Screen setup
-    screen_width, screen_height = 1600, 900
-    screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("My Pygame Window")
+# Auswahl des poligons und zeichnen der parkenden Autos
+selectedPolygon = Intro(screen, font).run()
+polygon = Polygon(polygonScreen, width, height, selectedPolygon)
+polygon.drawPolygon()
+polygon.park_cars()
 
-    # Clock for framerate
-    clock = pygame.time.Clock()
-    # Creating payer
-    av = pygame.Rect(100,100,225,125)
-    
-    # parkinng spaces definitions
-    horiz1 = pygame.Rect(width/10, height/10, width/10*8, 10)
-    horiz2 = pygame.Rect(width/10, height/10*9-10, width/10*8, 10)
-    # Define vertical lines rectangles outside the loop as well
-    vert_lines1 = []
-    vert_lines2 = []
-    for i in range(5):
-        vert1 = pygame.Rect(width/10 + width/10*8*i/4, height/10, 10, 160)
-        vert2 = pygame.Rect(width/10 + width/10*8*i/4, height/10*8-70, 10, 160)
-        vert_lines1.append(vert1)
-        vert_lines2.append(vert2)
+# Definition der spawns
+spawnArea_instance = spawnArea(polygonScreen, selectedPolygon)
+showSpawn =  "false"
+x = random.randint(spawnArea_instance.x1 + offset_x, spawnArea_instance.x2 - offset_x) # Definieren des genauen Startpunktes (Zufällig im Spawn
+y = random.randint(spawnArea_instance.y1 + offset_y, spawnArea_instance.y2 - offset_y) # Bereich -> Offset dient zur verkleinerung der Spawns,
 
-    # Game loop
-    running = True
-    while running:
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
 
-        # Game logic here (update things)
 
-        # Drawing
-        screen.fill("darkslategray")  # Background color
+player = Car(0, 0, direction, carSurface, "black", "white")
 
-        # Draw parking spaces
-        pygame.draw.rect(screen, "white", horiz1)
-        pygame.draw.rect(screen, "white", horiz2)
-        for i in range(5):
-            pygame.draw.rect(screen, "white", vert_lines1[i])
-            pygame.draw.rect(screen, "white", vert_lines2[i])
+running = True
+while running:
+    # poll for events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if (event.key == pygame.K_s): # Klassisches XOR, falls 1, dann 0, falls 0 dann 1
+                if (showSpawn == "false"):
+                    showSpawn = "true"
+                elif (showSpawn == "true"):
+                    showSpawn = "false"
+    carSurface.fill("black")
+    screen.blit(polygonScreen, (0,0))                           # Zeichnen des Polygons
+    pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
+    spawnArea_instance.showSpawn(showSpawn)                     # Zeige den Spawn an, falls nötig
 
-        pygame.draw.rect(screen, "black", av)
-        # Show everything
-        pygame.display.flip()
+    player.center = (carSurface.get_rect().center[0] - offset_y, carSurface.get_rect().center[1] - offset_x)
+    player.updatePos()                                          # player.x und player.y mit center player.center überschreiben
+    player.draw_parked_car(carSurface)                          # Zeichnen auf Surface (bis jetzt noch nicht angezeigt)
 
-        # Limit FPS
-        clock.tick(60)
+    #carSurface = pygame.transform.rotate(carSurface, 0)        # Rotieren das Surface, falls nötig (Lenkung)
+    carSurface_rect = carSurface.get_rect(center=(x, y)) # Zentrum das Autos
+    screen.blit(carSurface, carSurface_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
 
-    # Cleanup
-    pygame.quit()
-    sys.exit()
-
-if __name__ == "__main__":
-    main()
+    pygame.display.flip()
+pygame.quit()

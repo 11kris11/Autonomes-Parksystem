@@ -63,7 +63,7 @@ class Car:
                 light2 = pygame.Rect(self.x, self.y + self.car_width - 20, 20, 20)
                 pygame.draw.rect(screen, "yellow", light1, border_top_left_radius=15)
                 pygame.draw.rect(screen, "yellow", light2, border_bottom_left_radius=15)
-        
+            self.car = body.unionall((roof, light1, light2))
 
     def getCarRect(self):
         return self.car

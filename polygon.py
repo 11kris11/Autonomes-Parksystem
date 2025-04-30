@@ -7,8 +7,8 @@ class Polygon:
     height = 0
     selectedPolygon = 0
     screen = None
-    toFill = 8
-
+    toFill = 7
+    cars = []
     
     def __init__(self, screen, width, height, polNum):
         self.height = height
@@ -56,7 +56,7 @@ class Polygon:
             pygame.draw.rect(screen, "white", vert2)
             
     # Hier werden geparkte Autos zufällig einem Parkplatz zugeordnet
-    def park_cars(self):
+    def park_cars(self, surface):
         # Definition der Parkplätze
         parkingSpacesX = []
         parkingSpacesY = []
@@ -80,25 +80,38 @@ class Polygon:
             
         # Zufällige uaswahl der Parkplätze
         ammountToFill = random.randint(3,7)
+        filled = []
         for i in range(ammountToFill):
             direction = directions[random.randint(0,1000) % 2]
-            self.toFill =  random.randint(0,1000) % 8
+            while self.toFill in filled:
+                self.toFill =  random.randint(0,1000) % 8
             carColor =  colors[random.randint(0,len(colors)-1)]
             roofColor = colors[random.randint(0,len(colors)-1)]
             while roofColor == carColor:
                 roofColor = colors[random.randint(0,len(colors)-1)]
-        
-            if self.selectedPolygon == 1:
+
+            if self.selectedPolygon == 1 and not self.toFill in filled:
+                filled.append(self.toFill)
                 if self.toFill >= 4:
-                    Car(parkingSpacesX[1], parkingSpacesY[self.toFill - 4], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
+                    car = Car(parkingSpacesX[1], parkingSpacesY[self.toFill - 4], direction, surface, carColor, roofColor)
+                    car.draw_parked_car(surface)
+                    self.cars.append(car.getCarRect())
                 if self.toFill < 4:
-                    Car(parkingSpacesX[0], parkingSpacesY[self.toFill], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
-            
-            if self.selectedPolygon == 2:
+                    car = Car(parkingSpacesX[0], parkingSpacesY[self.toFill], direction, surface, carColor, roofColor)
+                    car.draw_parked_car(surface)
+                    self.cars.append(car.getCarRect())
+
+            if self.selectedPolygon == 2 and not self.toFill in filled:
+                filled.append(self.toFill)
                 if self.toFill >= 4:
-                    Car(parkingSpacesX[self.toFill - 4], parkingSpacesY[1], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
+                    car = Car(parkingSpacesX[self.toFill - 4], parkingSpacesY[1], direction, surface, carColor, roofColor)
+                    car.draw_parked_car(surface)
+                    self.cars.append(car.getCarRect())
+
                 if self.toFill < 4:
-                    Car(parkingSpacesX[self.toFill], parkingSpacesY[0], direction, self.screen, carColor, roofColor).draw_parked_car(self.screen)
+                    car = Car(parkingSpacesX[self.toFill], parkingSpacesY[0], direction, surface, carColor, roofColor)
+                    car.draw_parked_car(surface)
+                    self.cars.append(car.getCarRect())
 
     def drawPolygon(self):
         if self.selectedPolygon == 1:
@@ -107,3 +120,5 @@ class Polygon:
             self.draw_polygon_2(self.screen)
         else:
             print("Polygon nicht gespeichert")          # Debug
+
+    

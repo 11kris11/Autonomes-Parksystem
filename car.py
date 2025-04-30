@@ -20,9 +20,9 @@ class Car:
         self.direction = direction
         self.screen = screen
         self.center = (x,y)
-        self.acceleration = 0.05
+        self.acceleration = 0.1
         self.vel = 0
-        self.max_vel = 1.5
+        self.max_vel = 2
         self.surfaceX = 0
         self.surfaceY = 0
     
@@ -69,23 +69,29 @@ class Car:
                 light2 = pygame.Rect(self.x, self.y + self.car_width - 20, 20, 20)
                 pygame.draw.rect(screen, "yellow", light1, border_top_left_radius=15)
                 pygame.draw.rect(screen, "yellow", light2, border_bottom_left_radius=15)
-            self.car = body.unionall((roof, light1, light2))
+        self.car = body.unionall((roof, light1, light2))
 
     def getCarRect(self):
         return self.car
     
-    def rotate(self, rotationVel, left=False, right=False):
-        if left:
-            self.angle += rotationVel
-        if right:
-            self.angle -= rotationVel
+    def rotate(self, rotationVel, left=False, right=False, backwards=False):
+        if backwards:
+            if left:
+                self.angle -= rotationVel
+            if right:
+                self.angle += rotationVel
+        if not backwards:
+            if left:
+                self.angle += rotationVel
+            if right:
+                self.angle -= rotationVel
 
     def move_forward(self):                             # Wenn (self.vel + self.acceleration) größer als 
         self.vel = min(self.vel + self.acceleration, self.max_vel) # max_vel, dann max_vel sonst nicht
         self.move()
     
     def move_backward(self):
-        self.vel = max(self.vel - self.acceleration, -self.max_vel)
+        self.vel = max(self.vel - self.acceleration, -self.max_vel / 2)
         self.move()
 
     def reduce_speed(self):

@@ -4,6 +4,7 @@ from intro import Intro
 from spawnArea import spawnArea
 import random
 from car import Car
+from automation import automation
 
 # pygame setup
 pygame.init()
@@ -11,6 +12,7 @@ height = 900
 width = 1600
 screen = pygame.display.set_mode((width, height))
 polygonScreen = pygame.Surface((width, height), pygame.SRCALPHA)
+parkedSurface = pygame.Surface((width, height), pygame.SRCALPHA)
 carSurface = pygame.Surface((450,550), pygame.SRCALPHA)         # Definition der Surface für das Auto mit den perfekten Masen
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 60)                           
@@ -23,11 +25,14 @@ offset_x = 67
 offset_y = 122
 
 
+
+
+
 # Auswahl des poligons und zeichnen der parkenden Autos
 selectedPolygon = Intro(screen, font).run()
 polygon = Polygon(polygonScreen, width, height, selectedPolygon)
 polygon.drawPolygon()
-polygon.park_cars()
+polygon.park_cars(parkedSurface)
 
 # Definition der spawns
 spawnArea_instance = spawnArea(polygonScreen, selectedPolygon)
@@ -42,6 +47,9 @@ player.updatePos()                                          # player.x und playe
 
 iter = 0
 moved = None
+
+# Change this line to pass the screen instead of carSurface
+automation = automation(player)
 
 running = True
 while running:
@@ -60,8 +68,7 @@ while running:
     if not moved:
         iter = 0
     moved = False
-    #movedForward = False
-    #movedBackward = False
+    backwards = False
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_h]:
@@ -69,31 +76,44 @@ while running:
     if keys[pygame.K_DOWN]:
         player.move_backward()
         moved = True
+        backwards = True
     if keys[pygame.K_UP]:
         player.move_forward()
         moved = True
     if keys[pygame.K_LEFT] and moved and iter >= 15: #(movedForward or movedBackward):
-        player.rotate(0.5, left=True)
+        player.rotate(0.5, left=True, backwards=backwards)
     if keys[pygame.K_RIGHT] and moved: #(movedForward or movedBackward):
-        player.rotate(0.5, right=True)
+        player.rotate(0.5, right=True, backwards=backwards)
 
     if not moved and player.vel > 0:
         player.reduce_speed()
     if not moved and player.vel < 0:
-    #if not movedBackward:
         player.reduce_speed_backwards()
 
+
+
     carSurface.fill((0,0,0,0))
-    pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
+    ellipse = pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
     spawnArea_instance.showSpawn(showSpawn)                     # Zeige den Spawn an, falls nötig
 
     player.draw_parked_car(carSurface)                          # Zeichnen auf Surface (bis jetzt noch nicht angezeigt)
-    
+
     carSurface_rotated = pygame.transform.rotate(carSurface, player.angle)             # Rotieren das Surface, falls nötig (Lenkung)
     carSurface_rotated_rect = carSurface_rotated.get_rect(center=(player.surfaceX, player.surfaceY)) # Zentrum das Autos
-
-    screen.blit(polygonScreen, (0,0))                        # Zeichnen des Polygons
-    screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+    col = automation.detectCollision(parkedSurface, carSurface_rotated, carSurface_rotated_rect, 0,0)
+    if col != None:
+        print("col!!!")
+    else:
+        print("no col!!!")
+    # Update the player's collision rectangle before checking collisions
+    player.car = pygame.Rect(carSurface_rotated_rect.x, carSurface_rotated_rect.y, 
+                             carSurface_rotated_rect.width, carSurface_rotated_rect.height)
+    # Move the collision check to after blitting all surfaces to screen
+    # but before display.flip() to make sure the rectangles are visible    
     
+
+    polygonScreen.blit(parkedSurface, (0,0))
+    screen.blit(polygonScreen, (0,0))
+    screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
     pygame.display.flip()
 pygame.quit()

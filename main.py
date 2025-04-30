@@ -7,9 +7,11 @@ from car import Car
 from automation import automation
 
 # pygame setup
-pygame.init()
 height = 900
 width = 1600
+GAME_OVER = pygame.image.load("src/gameOver.jpg")
+GAME_OVER_POSITION = (width / 2 - GAME_OVER.get_width() / 2, height / 2 - GAME_OVER.get_height() / 2)
+pygame.init()
 screen = pygame.display.set_mode((width, height))
 polygonScreen = pygame.Surface((width, height), pygame.SRCALPHA)
 parkedSurface = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -47,7 +49,8 @@ player.updatePos()                                          # player.x und playe
 
 iter = 0
 moved = None
-
+carSurface_rotated = None
+carSurface_rotated_rect = None
 # Change this line to pass the screen instead of carSurface
 automation = automation(player)
 
@@ -63,6 +66,10 @@ while running:
                     showSpawn = False
                 elif not showSpawn:
                     showSpawn = True
+    col = automation.detectCollision(parkedSurface, carSurface_rotated, carSurface_rotated_rect)
+    if col != None:
+        running = False
+
     if moved:
         iter += 1
     if not moved:
@@ -100,11 +107,8 @@ while running:
 
     carSurface_rotated = pygame.transform.rotate(carSurface, player.angle)             # Rotieren das Surface, falls nötig (Lenkung)
     carSurface_rotated_rect = carSurface_rotated.get_rect(center=(player.surfaceX, player.surfaceY)) # Zentrum das Autos
-    col = automation.detectCollision(parkedSurface, carSurface_rotated, carSurface_rotated_rect, 0,0)
-    if col != None:
-        print("col!!!")
-    else:
-        print("no col!!!")
+
+
     # Update the player's collision rectangle before checking collisions
     player.car = pygame.Rect(carSurface_rotated_rect.x, carSurface_rotated_rect.y, 
                              carSurface_rotated_rect.width, carSurface_rotated_rect.height)
@@ -116,4 +120,18 @@ while running:
     screen.blit(polygonScreen, (0,0))
     screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
     pygame.display.flip()
+
+waiting = True
+while waiting:
+    screen.fill("black")
+    screen.blit(GAME_OVER, GAME_OVER_POSITION)
+    pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            waiting = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            waiting = False
+    
+    clock.tick(30)  # Control the frame rate during waiting
+
 pygame.quit()

@@ -1,17 +1,16 @@
 import pygame
+import math
 
 # Diese Klasse soll ein generisches Auto auf eine bestimmte Fäche bauen können, in verschiedenen farben
 class Car:
-    # Massen 
+    # Masen 
     car_length = 225
     car_width = 125
     car_roof_length = 125
     car_roof_width = 100
-    all = None
-    color = None
-    color2 = None
     car = None
-    center = None
+    angle = 0
+    rotation_vel = 1
 
     def __init__(self, x, y, direction, screen, color, color2):
         self.x = x
@@ -21,6 +20,11 @@ class Car:
         self.direction = direction
         self.screen = screen
         self.center = (x,y)
+        self.acceleration = 0.05
+        self.vel = 0
+        self.max_vel = 1.5
+        self.surfaceX = 0
+        self.surfaceY = 0
     
     # Das auto besteht aus zwei Vierecken, die das Dach und den Körper darstellen sollen. Die Lichter sind für die Richtungsorientierung 
     def draw_parked_car(self, screen): 
@@ -70,9 +74,42 @@ class Car:
     def getCarRect(self):
         return self.car
     
-    def move_forward(self):
-        self.x = self.x + 1
+    def rotate(self, rotationVel, left=False, right=False):
+        if left:
+            self.angle += rotationVel
+        if right:
+            self.angle -= rotationVel
 
+    def move_forward(self):                             # Wenn (self.vel + self.acceleration) größer als 
+        self.vel = min(self.vel + self.acceleration, self.max_vel) # max_vel, dann max_vel sonst nicht
+        self.move()
+    
+    def move_backward(self):
+        self.vel = max(self.vel - self.acceleration, -self.max_vel)
+        self.move()
+
+    def reduce_speed(self):
+        self.vel = max(self.vel - self.acceleration / 2, 0)
+        self.move()
+
+    def reduce_speed_backwards(self):
+        self.vel = min(self.vel + self.acceleration / 2, 0)
+        self.move()
+    
+    
+    def move(self):
+        radians = math.radians(self.angle)
+        vertical = math.cos(radians) * self.vel
+        horizontal = math.sin(radians) * self.vel
+
+        self.surfaceY -= vertical
+        self.surfaceX -= horizontal
+
+    
     def updatePos(self):
+        self.surfaceX = self.x
+        self.surfaceY = self.y 
         self.x = self.center[0]
         self.y = self.center[1]
+
+    

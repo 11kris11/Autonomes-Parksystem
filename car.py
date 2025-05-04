@@ -10,8 +10,7 @@ class Car:
     car_roof_width = 100
     car = None
     angle = 0
-    rotation_vel = 1
-    maxAngle = 35
+    maxAngle = 45
 
     def __init__(self, x, y, direction, screen, color, color2):
         self.x = x
@@ -99,12 +98,6 @@ class Car:
 
         self.surfaceX += (pos[0] * 0.2)
         self.surfaceY -= (pos[1] * 0.2)
-    
-    def updatePos(self):
-        self.surfaceX = self.x
-        self.surfaceY = self.y 
-        self.x = self.center[0]
-        self.y = self.center[1]
 
     def schraeglaufwinkel(self):
         lenkwinkel = math.radians(self.angle)

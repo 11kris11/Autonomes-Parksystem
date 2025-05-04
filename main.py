@@ -104,7 +104,7 @@ while running:
         frontTire_rotated = pygame.transform.rotate(player.frontTire, player.angle)
         frontTire_rotated_rect = frontTire_rotated.get_rect(center=player.frontTireCenter)
     
-    carSurface.blit(frontTire_rotated, frontTire_rotated_rect)
+        carSurface.blit(frontTire_rotated, frontTire_rotated_rect)
     
     # rotating the carSurface
     carSurface_rotated = pygame.transform.rotate(carSurface, player.gierwinkel)             # Rotieren das Surface, falls nötig (Lenkung)

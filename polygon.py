@@ -15,6 +15,7 @@ class Polygon:
         self.width = width
         self.selectedPolygon = polNum
         self.screen = screen
+        self.screen.fill("lightgrey")
         
 
     # Hier werden die Parkplätze gezeichnet, Poligon 1 = Rückwärts parkenn
@@ -24,7 +25,7 @@ class Polygon:
         asphalt2 = pygame.Rect(self.width/2-200, 0, 400, self.height)
         pygame.draw.rect(screen, "grey", asphalt1)
         pygame.draw.rect(screen, "grey", asphalt2)
-
+        
         # Parkplätze
         vert1 = pygame.Rect(self.width/10-50, self.height/10, 10, self.height/10*8)
         vert2 = pygame.Rect(self.width/10*9+50, self.height/10, 10, self.height/10*8)

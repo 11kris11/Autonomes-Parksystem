@@ -3,9 +3,6 @@ import random
 from car import Car
 
 class Polygon:
-    width = 0
-    height = 0
-    selectedPolygon = 0
     screen = None
     toFill = 7
     cars = []
@@ -16,6 +13,12 @@ class Polygon:
         self.selectedPolygon = polNum
         self.screen = screen
         self.screen.fill("lightgrey")
+        if polNum == 2:
+            self.parkingSpaceWidth = 150
+            self.parkingSpaceLength = self.width/10*2-10
+        elif polNum == 1:
+            self.parkingSpaceWidth = 265
+            self.parkingSpaceLength = height/10 + height/10-10
         
 
     # Hier werden die Parkplätze gezeichnet, Poligon 1 = Rückwärts parkenn

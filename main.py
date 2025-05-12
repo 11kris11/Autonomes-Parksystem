@@ -1,16 +1,19 @@
 import pygame
 from polygon import Polygon
-from intro import Intro
+from screens import Screens
 from spawnArea import spawnArea
 import random
 from car import Car
 from automation import automation
+
 
 pygame.init()
 
 # Zur globalen Speicherung
 height = 900
 width = 1600
+timeCounter = 0
+showMsg = False
 einspur = False
 running = True
 showSpawn =  False
@@ -21,18 +24,20 @@ GAME_OVER_POSITION = (width / 2 - GAME_OVER.get_width() / 2, height / 2 - GAME_O
 clock = pygame.time.Clock()
 ellipse = pygame.Rect(0,0,550,450)
 cameraColor = (173, 216, 230, 100)
-font = pygame.font.SysFont(None, 60)                                                          # mögliche Richtungen
+font = pygame.font.SysFont(None, 60)     
 
 # Screens und Surfaces
 screen = pygame.display.set_mode((width, height))
 polygonScreen = pygame.Surface((width, height), pygame.SRCALPHA)
 parkedSurface = pygame.Surface((width, height), pygame.SRCALPHA)
 carSurface = pygame.Surface((550,450), pygame.SRCALPHA)         # Definition der Surface für das Auto mit den perfekten Masen
+screens = Screens(screen, font)                                                     # mögliche Richtungen
 
 def getKeyInput():
     global einspur
     global running
     global showSpawn
+    global showMsg
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,27 +52,46 @@ def getKeyInput():
                 if showSpawn:
                     showSpawn = False
                 elif not showSpawn:
-                    showSpawn = True
+                    showSpawn = True#
+            if (event.key == pygame.K_ESCAPE):
+                running = False
     moved = False
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_DOWN]:
-        player.move_backward()
+        car.move_backward()
         moved = True
     if keys[pygame.K_UP]:
-        player.move_forward()
+        car.move_forward()
         moved = True
     if keys[pygame.K_LEFT]:
-        player.rotateTire(1, left=True)
+        car.rotateTire(1, left=True)
     if keys[pygame.K_RIGHT]: 
-        player.rotateTire(1, right=True)
-    if not moved and player.vel > 0:
-        player.reduce_speed()
-    if not moved and player.vel < 0:
-        player.reduce_speed_backwards()
+        car.rotateTire(1, right=True)
+    if not moved and car.vel > 0:
+        car.reduce_speed()
+    if not moved and car.vel < 0:
+        car.reduce_speed_backwards()
+    if keys[pygame.K_w]:
+        car.surfaceY -= 4
+    if keys[pygame.K_s]:
+        car.surfaceY += 4
+    if keys[pygame.K_a]:
+        car.surfaceX -= 4
+    if keys[pygame.K_d]:
+        car.surfaceX += 4
+    if keys[pygame.K_p]:
+        automation.checkParkingSpot(screen, carSurface_rotated_rect, font)
+        showMsg = True
+    if keys[pygame.K_q]:
+        showMsg = False
+
+def countTime():
+    global timeCounter 
+    timeCounter += 1
 
 def selectPolygon():
-    selectedPolygon = Intro(screen, font).run()
+    selectedPolygon = screens.runIntro()
     return selectedPolygon
 
 def createPolygon():
@@ -76,16 +100,17 @@ def createPolygon():
     polygon.park_cars(parkedSurface)
     return polygon
 
-def initPlayer():
-    player = Car(0, 0, "right", carSurface, "red", "white")
-    player.center = (carSurface.get_rect().center[0] - player.car_length / 2, carSurface.get_rect().center[1] - player.car_width / 2)
-    player.x = player.center[0] 
-    player.y = player.center[1]
-    player.surfaceX = random.randint(spawnArea_instance.x1, spawnArea_instance.x2) # Definieren des genauen Startpunktes (Zufällig im Spawn
-    player.surfaceY = random.randint(spawnArea_instance.y1, spawnArea_instance.y2) # Bereich -> Offset dient zur verkleinerung der Spawns,
+def initcar():
+    car = Car(0, 0, "right", carSurface, "red", "darkgrey")
+    car.center = (carSurface.get_rect().center[0] - car.car_length / 2, carSurface.get_rect().center[1] - car.car_width / 2)
+    car.x = car.center[0] 
+    car.y = car.center[1]
+    car.surfaceX = random.randint(spawnArea_instance.x1, spawnArea_instance.x2) # Definieren des genauen Startpunktes (Zufällig im Spawn
+    car.surfaceY = random.randint(spawnArea_instance.y1, spawnArea_instance.y2) # Bereich -> Offset dient zur verkleinerung der Spawns,
     if selectedPolygon == 1:
-        player.gierwinkel += 90
-    return player
+        car.gierwinkel += 90
+    return car
+
 def gameOver():
     waiting = True
     while waiting:
@@ -107,40 +132,37 @@ polygon = createPolygon()
 
 # Definition der spawns
 spawnArea_instance = spawnArea(polygonScreen, selectedPolygon)
-player = initPlayer()
+car = initcar()
 pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
 
 
 # Change this line to pass the screen instead of carSurface
-automation = automation(player)
-
+automation = automation(car, polygon, polygonScreen, carSurface)
 
 while running:
     screen.fill((0,0,0,0))
     # Schaue ob es eine kollision gab und falls ja Stop das Spiel
-    col = automation.detectCollision(parkedSurface, carSurface_rotated, carSurface_rotated_rect)
+    col = automation.detectCollision(parkedSurface, carSurface_rotated_rect)
     if col != None:
         running = False
     getKeyInput() # Schau ob es ein Key Input gab und reagiere
-    spawnArea_instance.showSpawn(showSpawn)  # Zeige den Spawn an, falls showSpawn == True
 
     # Zeichnen das spielers und der camera 
-    player.draw_parked_car(carSurface, einspur)       
+    car.draw_parked_car(carSurface, einspur)       
     if einspur:
-        frontTire_rotated = pygame.transform.rotate(player.frontTire, player.angle)
-        frontTire_rotated_rect = frontTire_rotated.get_rect(center=player.frontTireCenter)
+        frontTire_rotated = pygame.transform.rotate(car.frontTire, car.angle)
+        frontTire_rotated_rect = frontTire_rotated.get_rect(center=car.frontTireCenter)
     
         carSurface.blit(frontTire_rotated, frontTire_rotated_rect)
     
     # Auto rotieren
-    carSurface_rotated = pygame.transform.rotate(carSurface, player.gierwinkel)             # Rotieren das Surface, falls nötig (Lenkung)
-    carSurface_rotated_rect = carSurface_rotated.get_rect(center=(player.surfaceX, player.surfaceY)) # Zentrum das Autos
-    
+    carSurface_rotated = pygame.transform.rotate(carSurface, car.gierwinkel)             # Rotieren das Surface, falls nötig (Lenkung)
+    carSurface_rotated_rect = carSurface_rotated.get_rect(center=(car.surfaceX, car.surfaceY)) # Zentrum das Autos
+    automation.carSurface = carSurface_rotated
     # Alles auf den Mainn Screen zeichnen
     polygonScreen.blit(parkedSurface, (0,0))
     screen.blit(polygonScreen, (0,0))
     screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
-    automation.searchParkingSpot(screen, carSurface_rotated)
     pygame.display.flip()
 gameOver() # Zeige Game Over an
 

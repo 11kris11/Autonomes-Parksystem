@@ -25,6 +25,7 @@ clock = pygame.time.Clock()
 ellipse = pygame.Rect(0,0,550,450)
 cameraColor = (173, 216, 230, 100)
 font = pygame.font.SysFont(None, 60)     
+timer = None
 
 # Screens und Surfaces
 screen = pygame.display.set_mode((width, height))
@@ -38,6 +39,7 @@ def getKeyInput():
     global running
     global showSpawn
     global showMsg
+    global timer
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -81,10 +83,8 @@ def getKeyInput():
     if keys[pygame.K_d]:
         car.surfaceX += 4
     if keys[pygame.K_p]:
-        automation.checkParkingSpot(screen, carSurface_rotated_rect, font)
-        showMsg = True
-    if keys[pygame.K_q]:
-        showMsg = False
+        automation.checkParkingSpot(screen, carSurface_rotated_rect)
+        timer = 0
 
 def countTime():
     global timeCounter 
@@ -101,7 +101,7 @@ def createPolygon():
     return polygon
 
 def initcar():
-    car = Car(0, 0, "right", carSurface, "red", "darkgrey")
+    car = Car(0, 0, "right", carSurface, "blue", "darkgrey")
     car.center = (carSurface.get_rect().center[0] - car.car_length / 2, carSurface.get_rect().center[1] - car.car_width / 2)
     car.x = car.center[0] 
     car.y = car.center[1]
@@ -135,6 +135,7 @@ spawnArea_instance = spawnArea(polygonScreen, selectedPolygon)
 car = initcar()
 pygame.draw.ellipse(carSurface, cameraColor, ellipse)       # Zeichnen der Kamera
 
+text = "Parklücke besetzt"
 
 # Change this line to pass the screen instead of carSurface
 automation = automation(car, polygon, polygonScreen, carSurface)
@@ -146,7 +147,7 @@ while running:
     if col != None:
         running = False
     getKeyInput() # Schau ob es ein Key Input gab und reagiere
-
+    
     # Zeichnen das spielers und der camera 
     car.draw_parked_car(carSurface, einspur)       
     if einspur:
@@ -162,6 +163,20 @@ while running:
     # Alles auf den Mainn Screen zeichnen
     polygonScreen.blit(parkedSurface, (0,0))
     screen.blit(polygonScreen, (0,0))
+    if automation.parkingSpaceRect:
+        car.body.center = (car.surfaceX, car.surfaceY)
+        if automation.parkingSpaceRect.contains(car.body):
+            automation.color = "green"
+        else: 
+            automation.color = "red"
+        pygame.draw.rect(screen, automation.color, automation.parkingSpaceRect)
+    if automation.showMsg and timer < 300:
+        timer += 1
+        rendered_text = font.render(text, True,(0,0,0))
+        screen.blit(rendered_text, (50,20))
+    else: 
+        automation.showMsg = False
+    
     screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
     pygame.display.flip()
 gameOver() # Zeige Game Over an

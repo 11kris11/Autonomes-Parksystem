@@ -62,7 +62,10 @@ class Car:
             self.frontTire.blit(tire, (0,0))
             self.rearTire.blit(tire, (0,0))
             screen.blit(self.rearTire, (self.rearTireCenter[0] - self.frontTire.get_width() / 2, self.rearTireCenter[1] - self.frontTire.get_height() / 2))
-            
+
+        self.body = body
+
+
     def getCarRect(self):
         return self.car
     

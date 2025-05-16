@@ -12,6 +12,11 @@ class automation:
         self.screenMask = self.createMask(screen, color=(255, 255, 255, 255), treshold=(10,10,10,10))
         self.grid_resolution = 5
         self.matrix = []
+        self.showMsg = False
+        self.color = "red"
+        self.x = 0 
+        self.y = 0
+        self.parkingSpaceRect = None
 
     def initGrid(self):
         rect = self.screen.get_rect()
@@ -27,7 +32,6 @@ class automation:
             self.matrix.append(row)
         if self.matrix:
             self.grid = Grid(matrix=self.matrix)
-    
     
     def createMask(self, surface, color=None, treshold=127):
         if color == None:
@@ -47,12 +51,8 @@ class automation:
         collision = mask1.overlap(mask2, offset)
 
         return collision
-    
-    def searchParkingSpot(self):
-        s = 0
 
-
-    def checkParkingSpot(self, screen, rect, font):
+    def checkParkingSpot(self, screen, rect):
         x = 0
         y = 0
         center = rect.center
@@ -60,8 +60,6 @@ class automation:
         points = []
         carMask = self.createMask(self.carSurface, treshold=0)
         overlapMask = self.screenMask.overlap_mask(carMask, offset)
-        #print(self.carMask.count(), " car")
-        #print(self.screenMask.count())
 
         if overlapMask.count() > 0: # Only draw if there is an overlap
 # --- Visualize the overlapMask ---          Aufgrund Performanz ausgenommen
@@ -93,39 +91,34 @@ class automation:
                 points.append(temp[0])
             if points:
                 points.sort(key=lambda element:element[0])
-            twoClosest = []
+            self.twoClosest = []
             for i in range(0,len(points)):
-                twoClosest.append(points[i][1])
-            twoClosest = twoClosest[:2]
-            if len(twoClosest) == 1:
-                pygame.draw.circle(screen, "black", twoClosest[0], 5)
-            elif len(twoClosest) == 2:
-                pygame.draw.circle(screen, "black", twoClosest[0], 5)
-                pygame.draw.circle(screen, "black", twoClosest[1], 5)
+                self.twoClosest.append(points[i][1])
+            self.twoClosest = self.twoClosest[:2]
+            if len(self.twoClosest) == 1:
+                pygame.draw.circle(screen, "black", self.twoClosest[0], 5)
+            #elif len(twoClosest) == 2:
 
-            if len(twoClosest) == 2:
-                distance = math.dist(twoClosest[0], twoClosest[1])
-                if twoClosest[0][0] == twoClosest[1][0]:
-                    if self.car.surfaceX > twoClosest[0][0]:
-                        x = twoClosest[0][0] - self.polygon.parkingSpaceWidth / 2
-                        y = min(twoClosest[0][1], twoClosest[1][1]) + distance / 2
-                    elif self.car.surfaceX < twoClosest[0][0]:
-                        x = twoClosest[0][0] + self.polygon.parkingSpaceWidth / 2
-                        y = min(twoClosest[0][1], twoClosest[1][1]) + distance / 2
-                elif twoClosest[0][1] == twoClosest[1][1]:
-                    if self.car.surfaceY > twoClosest[0][1]:
-                        x = min(twoClosest[0][0], twoClosest[1][0]) + distance / 2
-                        y = twoClosest[0][1] - self.polygon.parkingSpaceWidth / 2
-                    elif self.car.surfaceY < twoClosest[0][1]:
-                        x = min(twoClosest[0][0], twoClosest[1][0]) + distance / 2
-                        y = twoClosest[0][1] + self.polygon.parkingSpaceWidth / 2
-
-            
+            if len(self.twoClosest) == 2:
+                self.lineDistance = math.dist(self.twoClosest[0], self.twoClosest[1])
+                if self.twoClosest[0][0] == self.twoClosest[1][0]:
+                    if self.car.surfaceX > self.twoClosest[0][0]:
+                        x = self.twoClosest[0][0] - self.polygon.parkingSpaceWidth / 2
+                        y = min(self.twoClosest[0][1], self.twoClosest[1][1]) + self.lineDistance / 2
+                    elif self.car.surfaceX < self.twoClosest[0][0]:
+                        x = self.twoClosest[0][0] + self.polygon.parkingSpaceWidth / 2
+                        y = min(self.twoClosest[0][1], self.twoClosest[1][1]) + self.lineDistance / 2
+                elif self.twoClosest[0][1] == self.twoClosest[1][1]:
+                    if self.car.surfaceY > self.twoClosest[0][1]:
+                        x = min(self.twoClosest[0][0], self.twoClosest[1][0]) + self.lineDistance / 2
+                        y = self.twoClosest[0][1] - self.polygon.parkingSpaceLength / 2
+                    elif self.car.surfaceY < self.twoClosest[0][1]:
+                        x = min(self.twoClosest[0][0], self.twoClosest[1][0]) + self.lineDistance / 2
+                        y = self.twoClosest[0][1] + self.polygon.parkingSpaceLength / 2
             if x != 0 and y != 0 and y != 449.5:
                 self.x = x
                 self.y = y
-                self.park(self.checkParkingSpace(x,y), font)
-
+                self.park(self.checkParkingSpace(x,y))
 
     def checkParkingSpace(self, x,y):
             pixel_color = self.screen.get_at((int(x), int(y)))
@@ -133,23 +126,18 @@ class automation:
                 return (x,y)
             else:
                 return None
-
-
-    def park(self, spaceCenter, font):
-        screens = Screens(self.screen, font)
+            
+    def park(self, spaceCenter):
         if spaceCenter:
-            self.text = False
-            screens.showMsg(self.text)
+            self.showMsg = False
+            if self.parkingSpaceRect:
+                self.parkingSpaceRect.center = (self.x,self.y)
+            else:
+                self.parkingSpaceRect = pygame.Rect(self.x, self.y, self.polygon.parkingSpaceWidth, self.polygon.parkingSpaceLength)
+                self.parkingSpaceRect.center = spaceCenter
         else: 
-            self.text = True
-            screens.showMsg(self.text)
+            self.showMsg = True
+        
 
-
-
-    def backwardsParking(self):
-        print("backwards")
     
-    
-    def sideParking(self):
-        print("side")
 

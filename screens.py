@@ -32,22 +32,3 @@ class Screens:
 
         return self.selected_level
     
-    def showMsg(self, msg):
-        self.msgQueue.insert(0, msg)
-        if len(self.msgQueue) == 6:
-            del self.msgQueue[5]
-
-
-    def drawMsgs(self):
-        offset = 0
-        for i in range (0, min(len(self.msgQueue), 5)):
-            text = str(self.msgQueue[i])
-            rendered_text = self.font.render(text, True, (1,1,1,255))
-            text_rect = rendered_text.get_rect()
-            background = pygame.Surface(text_rect.size)
-            background.fill((220,220,220))
-            background.blit(rendered_text, (0,0))
-
-
-            offset += text_rect.height * i
-            self.screen.blit(background, (20, offset))

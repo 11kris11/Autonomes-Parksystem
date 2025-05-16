@@ -14,8 +14,8 @@ class Polygon:
         self.screen = screen
         self.screen.fill("lightgrey")
         if polNum == 2:
-            self.parkingSpaceWidth = 150
-            self.parkingSpaceLength = self.width/10*2-10
+            self.parkingSpaceWidth = self.width/10*2-10
+            self.parkingSpaceLength = 150
         elif polNum == 1:
             self.parkingSpaceWidth = 265
             self.parkingSpaceLength = height/10 + height/10-10
@@ -31,13 +31,13 @@ class Polygon:
         
         # Parkplätze
         vert1 = pygame.Rect(self.width/10-50, self.height/10, 10, self.height/10*8)
-        vert2 = pygame.Rect(self.width/10*9+50, self.height/10, 10, self.height/10*8)
+        vert2 = pygame.Rect(self.width/10*9+40, self.height/10, 10, self.height/10*8)
         pygame.draw.rect(screen, "white", vert1)
         pygame.draw.rect(screen, "white", vert2)
 
         for i in range(5):
             horiz1 = pygame.Rect(self.width/10-50, self.height/10 + i*self.height/10*8/4, 275, 10)
-            horiz2 = pygame.Rect(self.width/10*9-225, self.height/10 + i*self.height/10*8/4, 275+10, 10)
+            horiz2 = pygame.Rect(self.width/10*9-225, self.height/10 + i*self.height/10*8/4, 275, 10)
             pygame.draw.rect(screen, "white", horiz1)
             pygame.draw.rect(screen, "white", horiz2)
 

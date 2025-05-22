@@ -119,27 +119,38 @@ class automation:
             try:
              #   # Create a surface from the overlap mask
               #  # Set bits (overlap area) will be green, unset bits transparent
+                # Überlappungsfläche als grüne, halbtransparente Surface visualisieren
                 overlap_viz_surface = overlapMask.to_surface(setcolor=(0, 255, 0, 180), # Semi-transparent green
                                                              unsetcolor=(0, 0, 0, 0)) 
                 
-                # Draw the visualization onto surface1 (the screen) at origin (0,0)
-                # The overlapMask coordinates are relative to surface1's origin
+                # Visualisierung auf den Bildschirm zeichnen
                 screen.blit(overlap_viz_surface, (0, 0)) 
             except Exception as e:
                 print(f"Error visualizing overlapMask: {e}")
-# --- End visualization ---
+# --- Ende der Visualisierung ---
+
+            # Zusammenhängende Bereiche in der Überlappungsmaske finden
             maskComponents = overlapMask.connected_components()
+            # Liste für die Umrisse der Maskenbereiche
             maskOutlines = []
+            # Umrisse für alle Komponenten extrahieren
             for mask in maskComponents:
                 maskOutlines.append(mask.outline())
+            
+            # Liste für die Entfernungsberechnungen zurücksetzen
             points = []
+            # Für jeden Maskenumriss...
             for i in range(0, len(maskOutlines)):
                 tempMask = maskOutlines[i]
                 temp = []
+                # ...jeden Pixel im Umriss durchgehen
                 for pixel in tempMask:
+                    # Euklidische Distanz vom Pixel zum Zentrum des Autos berechnen
                     distance = math.dist(center, pixel)
+                    # Pixel mit seiner Distanz speichern
                     temp.append((distance, pixel))
                 
+                # Pixels nach Distanz sortieren (nächster Punkt zuerst)
                 temp.sort(key=lambda element: element[0])
                 points.append(temp[0])
             if points:

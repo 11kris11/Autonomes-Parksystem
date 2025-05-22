@@ -95,28 +95,41 @@ def selectPolygon():
     return selectedPolygon
 
 def createPolygon():
+    # Erstellt ein Polygon-Objekt mit den gewählten Einstellungen
     polygon = Polygon(polygonScreen, width, height, selectedPolygon)
+    # Zeichnet das ausgewählte Polygon auf die Oberfläche
     polygon.drawPolygon()
+    # Fügt zufällig platzierte geparkte Autos zur Parkfläche hinzu
     polygon.park_cars(parkedSurface)
     return polygon
 
 def initcar():
+    # Erstellt ein neues Auto-Objekt mit Standardeigenschaften
     car = Car(0, 0, "right", carSurface, "blue", "darkgrey")
+    # Berechnet die Mittelposition des Autos auf der Surface 
     car.center = (carSurface.get_rect().center[0] - car.car_length / 2, carSurface.get_rect().center[1] - car.car_width / 2)
+    # Setzt die Ausgangsposition des Autos
     car.x = car.center[0] 
     car.y = car.center[1]
+    # Platziert das Auto zufällig im definierten Spawn-Bereich
     car.surfaceX = random.randint(spawnArea_instance.x1, spawnArea_instance.x2) # Definieren des genauen Startpunktes (Zufällig im Spawn
     car.surfaceY = random.randint(spawnArea_instance.y1, spawnArea_instance.y2) # Bereich -> Offset dient zur verkleinerung der Spawns,
+    # Bei Polygon-Typ 1 (Reverse Parking) das Auto um 90 Grad drehen
     if selectedPolygon == 1:
         car.gierwinkel += 90
     return car
 
 def gameOver():
+    # Game-Over-Zustand mit Wartebildschirm
     waiting = True
     while waiting:
+        # Schwarzer Hintergrund für Game-Over-Anzeige
         screen.fill("black")
+        # Game-Over-Bild anzeigen
         screen.blit(GAME_OVER, GAME_OVER_POSITION)
+        # Bildschirm aktualisieren
         pygame.display.flip()
+        # Auf Benutzeraktionen warten (Beenden oder Neustart)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 waiting = False

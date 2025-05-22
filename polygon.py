@@ -62,24 +62,28 @@ class Polygon:
     # Hier werden geparkte Autos zufällig einem Parkplatz zugeordnet
     def park_cars(self, surface):
         # Definition der Parkplätze
-        parkingSpacesX = []
-        parkingSpacesY = []
-        directions = ["left","right"]
+        parkingSpacesX = []  # Liste für die X-Koordinaten der Parkplätze
+        parkingSpacesY = []  # Liste für die Y-Koordinaten der Parkplätze
+        directions = ["left","right"]  # Mögliche Ausrichtungen der geparkten Autos
         colors = ["pink", "brown", "black", "blue", 
                 "red", "green", "cyan", "magenta",
-                "orange", "purple"]
+                "orange", "purple"]  # Verfügbare Farben für die Autos
 
         if self.selectedPolygon == 1:
+            # Bei Rückwärtsparken: Zwei Spalten von Parkplätzen (links und rechts)
             parkingSpacesX = [self.width / 10 - 20, self.width/10*9-200]
+            # Vier Reihen von Parkplätzen mit gleichmäßigem Abstand
             parkingSpacesY = [self.height / 10 + 30, 
                                 self.height / 10 + 30 + self.height/10*8/4, 
                                 self.height / 10 + 30 + self.height/10*8/4*2, 
                                 self.height / 10 + 30 + self.height/10*8/4*3]
         if self.selectedPolygon == 2:
+            # Bei Seitwärtsparken: Vier Spalten von Parkplätzen mit gleichmäßigem Abstand
             parkingSpacesX = [self.width / 10 + 50, 
                                 self.width / 10 + 50 + self.width/10*8/4,
                                 self.width / 10 + 50 + self.width/10*8/4*2,
                                 self.width / 10 + 50 + self.width/10*8/4*3]
+            # Zwei Reihen von Parkplätzen (oben und unten)
             parkingSpacesY = [self.height / 10 + 25, self.height/10*8-60]
             
         # Zufällige uaswahl der Parkplätze

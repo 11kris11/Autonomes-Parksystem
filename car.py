@@ -1,36 +1,43 @@
-import pygame
-import math
+import pygame  # Hauptbibliothek für die Spieleentwicklung
+import math    # Wird für trigonometrische Funktionen in der Bewegungsberechnung benötigt
 
-# Diese Klasse soll ein generisches Auto auf eine bestimmte Fäche bauen können, in verschiedenen farben
+# Diese Klasse erstellt ein generisches Auto mit anpassbarer Farbe und Position
+# und implementiert die Einspurmodell-Physik für realistische Fahrbewegungen
 class Car:
-    # Masen 
-    car_length = 225
-    car_width = 125
-    car_roof_length = 125
-    car_roof_width = 100
-    car = None
-    angle = 0
-    maxAngle = 45
+    # Standardabmessungen für das Auto (in Pixeln)
+    car_length = 225      # Gesamtlänge des Autos
+    car_width = 125       # Breite des Autos
+    car_roof_length = 125 # Länge des Autodachs
+    car_roof_width = 100  # Breite des Autodachs
+    car = None            # Referenz auf das gesamte Auto-Rechteck (wird später initialisiert)
+    angle = 0             # Aktueller Lenkwinkel der Vorderräder
+    maxAngle = 45         # Maximaler Lenkeinschlag in Grad
 
     def __init__(self, x, y, direction, screen, color, color2):
-        self.x = x
-        self.y = y
-        self.color = color
-        self.color2 = color2
-        self.screen = screen
-        self.center = (x,y)
-        self.acceleration = 0.5
-        self.vel = 0
-        self.max_vel = 15
-        self.surfaceX = 0
-        self.surfaceY = 0
-        self.gierwinkel = 0
-        self.axleLen = (135)
+        # Positionsparameter
+        self.x = x            # X-Koordinate des Autos auf der Surface
+        self.y = y            # Y-Koordinate des Autos auf der Surface
+        self.color = color    # Hauptfarbe des Autos (für den Körper)
+        self.color2 = color2  # Sekundärfarbe (für das Dach)
+        self.screen = screen  # Surface, auf der das Auto gezeichnet wird
+        self.center = (x,y)   # Zentrum des Autos (wird für Rotationen verwendet)
+        
+        # Bewegungsparameter
+        self.acceleration = 0.5  # Beschleunigungsrate des Autos
+        self.vel = 0            # Aktuelle Geschwindigkeit (positiv=vorwärts, negativ=rückwärts)
+        self.max_vel = 15       # Maximale Geschwindigkeit in beide Richtungen
+        self.surfaceX = 0       # X-Position des Autos auf dem Hauptbildschirm
+        self.surfaceY = 0       # Y-Position des Autos auf dem Hauptbildschirm
+        self.gierwinkel = 0     # Ausrichtung des Autos in Grad (0=rechts, 90=oben)
+        self.axleLen = (135)    # Achsabstand für das Einspurmodell (beeinflusst den Wendekreis)
     
-    # Das auto besteht aus zwei Vierecken, die das Dach und den Körper darstellen sollen. Die Lichter sind für die Richtungsorientierung 
+    # Zeichnet das Auto mit allen Komponenten (Körper, Dach, Lichter, optional Reifen)
+    # Parameter:
+    #   screen: Surface, auf der gezeichnet wird
+    #   einspur: Wenn True, wird das Auto mit dem Einspurmodell (sichtbare Reifen) gezeichnet
     def draw_parked_car(self, screen, einspur=False): 
-        light1 = None
-        light2 = None
+        light1 = None  # Referenz für das erste Rücklicht
+        light2 = None  # Referenz für das zweite Rücklicht
 
         # Körper & Dach
         body = pygame.Rect(self.x, self.y, self.car_length, self.car_width)

@@ -1,14 +1,22 @@
 import pygame
 
+# Klasse zur Verwaltung verschiedener Bildschirme und Textanzeigen im Spiel
 class Screens:
     def __init__(self, screen, font):
+        # Hauptbildschirm auf dem gezeichnet wird
         self.screen = screen
+        # Schriftart für Textanzeigen
         self.font = font
+        # Flag zur Steuerung der Hauptschleife
         self.running = True
+        # Speichert die vom Benutzer ausgewählte Spielvariante
         self.selected_level = None
+        # Queue für Nachrichten (aktuell nicht verwendet, für zukünftige Erweiterungen)
         self.msgQueue = []
 
+    # Zeigt den Intro-Bildschirm mit Levelauswahl und Steuerungsanweisungen
     def runIntro(self):
+        # Liste mit allen Textzeilen, die angezeigt werden sollen
         text_lines = [
             "Select Level: Press 1 for Reverse Parking or 2 for Side Parking",
             " ",
@@ -22,17 +30,21 @@ class Screens:
             "    WASD: Quick and Easy movement (not part of the finished model)"
         ]
         
+        # Hauptschleife für den Intro-Bildschirm
         while self.running:
-            # Poll for events
+            # Verarbeitung von Ereignissen (Benutzerinteraktionen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    # Spiel beenden, wenn das Fenster geschlossen wird
                     self.running = False
                     return None  # Exit the screens loop
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_1:
+                        # Level 1 ausgewählt (Rückwärtsparken)
                         self.selected_level = 1
                         self.running = False
                     elif event.key == pygame.K_2:
+                        # Level 2 ausgewählt (Seitenparken)
                         self.selected_level = 2
                         self.running = False
 

@@ -47,7 +47,7 @@ class Car:
         self.car = body.unionall((roof, light1, light2))
 
         if einspur:
-            temp = pygame.image.load(r"Autonomes-Parksystem\src\tire.png")
+            temp = pygame.image.load(r"src\tire.png")
             width = temp.get_width() / 4
             height = temp.get_height() / 4
             tire = pygame.transform.scale(temp, (width, height))
@@ -120,8 +120,7 @@ class Car:
             x = self.vel * 2/3 * math.cos(winkel)
             y = self.vel * 2/3 * math.sin(winkel)
 
-        center = (x,y) 
-        return center
+        return (x,y)
     
     def nextAngle(self):
         p1 = self.vel / self.axleLen

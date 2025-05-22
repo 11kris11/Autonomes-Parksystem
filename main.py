@@ -19,7 +19,7 @@ running = True
 showSpawn =  False
 carSurface_rotated = None
 carSurface_rotated_rect = None
-GAME_OVER = pygame.image.load(r"Autonomes-Parksystem\src\gameOver.jpg")
+GAME_OVER = pygame.image.load(r"src\gameOver.jpg")
 GAME_OVER_POSITION = (width / 2 - GAME_OVER.get_width() / 2, height / 2 - GAME_OVER.get_height() / 2)
 clock = pygame.time.Clock()
 ellipse = pygame.Rect(0,0,550,450)
@@ -178,6 +178,7 @@ while running:
         automation.showMsg = False
     
     screen.blit(carSurface_rotated, carSurface_rotated_rect) # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+    automation.update(screen)
     pygame.display.flip()
 gameOver() # Zeige Game Over an
 

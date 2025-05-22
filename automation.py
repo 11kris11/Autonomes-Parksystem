@@ -2,6 +2,8 @@ import pygame
 import math
 from screens import Screens
 from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+from pathfinding.core.diagonal_movement import DiagonalMovement
 
 class automation:
     def __init__(self, car, polygon, screen, carSurface):
@@ -17,16 +19,23 @@ class automation:
         self.x = 0 
         self.y = 0
         self.parkingSpaceRect = None
+        self.path = []
+        self.initGrid()
 
     def initGrid(self):
         rect = self.screen.get_rect()
+        self.matrix = []  # Clear any existing matrix
         for y in range(0, rect.height, self.grid_resolution):
             row = []
             for x in range(0, rect.width, self.grid_resolution):
-                color = self.screen.get_at((x,y))[:3]
-                if color != (190,190,190) or color != (255,255,255):
-                    walkable = 1
-                else: 
+                try:
+                    color = self.screen.get_at((x, y))[:3]
+                    # Mark as walkable (1) if it's a drivable area (grey)
+                    if color == (190, 190, 190):
+                        walkable = 1
+                    else:
+                        walkable = 0
+                except IndexError:
                     walkable = 0
                 row.append(walkable)
             self.matrix.append(row)
@@ -52,6 +61,50 @@ class automation:
 
         return collision
 
+    def findPath(self, start_pos, end_pos):
+        # Convert pixel coordinates to grid coordinates
+        start_x, start_y = int(start_pos[0] / self.grid_resolution), int(start_pos[1] / self.grid_resolution)
+        end_x, end_y = int(end_pos[0] / self.grid_resolution), int(end_pos[1] / self.grid_resolution)
+        
+        # Check boundaries
+        if not self.matrix:
+            return []
+        if start_x < 0 or start_x >= len(self.matrix[0]) or start_y < 0 or start_y >= len(self.matrix):
+            return []
+        if end_x < 0 or end_x >= len(self.matrix[0]) or end_y < 0 or end_y >= len(self.matrix):
+            return []
+        
+        # Create start and end nodes
+        start = self.grid.node(start_x, start_y)
+        end = self.grid.node(end_x, end_y)
+        
+        # Create A* finder and find path
+        finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+        path, runs = finder.find_path(start, end, self.grid)
+        
+        # Reset grid for future path searches
+        self.grid.cleanup()
+        
+        # Convert grid coordinates back to pixel coordinates
+        pixel_path = []
+        for node in path:
+            # Check the type of node and handle accordingly
+            if hasattr(node, 'x') and hasattr(node, 'y'):
+                # It's a GridNode object
+                x = node.x * self.grid_resolution + self.grid_resolution // 2
+                y = node.y * self.grid_resolution + self.grid_resolution // 2
+            else:
+                # It's a tuple or list
+                x = node[0] * self.grid_resolution + self.grid_resolution // 2
+                y = node[1] * self.grid_resolution + self.grid_resolution // 2
+            pixel_path.append((x, y))
+        
+        return pixel_path
+    
+    def drawPath(self, screen, path, color=(0, 0, 255), radius=3):
+        for point in path:
+            pygame.draw.circle(screen, color, point, radius)
+    
     def checkParkingSpot(self, screen, rect):
         x = 0
         y = 0
@@ -135,9 +188,19 @@ class automation:
             else:
                 self.parkingSpaceRect = pygame.Rect(self.x, self.y, self.polygon.parkingSpaceWidth, self.polygon.parkingSpaceLength)
                 self.parkingSpaceRect.center = spaceCenter
+            
+            # Find path from car to parking spot
+            car_pos = (self.car.surfaceX, self.car.surfaceY)
+            self.path = self.findPath(car_pos, spaceCenter)
         else: 
             self.showMsg = True
-        
-
+            self.path = []
     
+    def update(self, screen):
+        # Draw the path if it exists
+        if self.path:
+            self.drawPath(screen, self.path)
+
+
+
 

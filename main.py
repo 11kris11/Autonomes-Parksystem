@@ -50,7 +50,7 @@ def getKeyInput():
                     einspur = False
                 elif not einspur:
                     einspur = True
-            if (event.key == pygame.K_s): # Klassisches XOR, falls 1, dann 0, falls 0 dann 1
+            if (event.key == pygame.K_r): # Klassisches XOR, falls 1, dann 0, falls 0 dann 1
                 if showSpawn:
                     showSpawn = False
                 elif not showSpawn:
@@ -147,6 +147,8 @@ while running:
     if col != None:
         running = False
     getKeyInput() # Schau ob es ein Key Input gab und reagiere
+    spawnArea_instance.showSpawn(showSpawn)
+
     
     # Zeichnen das spielers und der camera 
     car.draw_parked_car(carSurface, einspur)       

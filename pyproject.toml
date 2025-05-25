@@ -1,0 +1,4 @@
+[tool.isort]
+profile = "black"
+known_third_party = ["pygame", "pathfinding"]
+known_first_party = ["car", "automation", "polygon"]

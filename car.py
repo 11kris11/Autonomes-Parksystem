@@ -134,3 +134,4 @@ class Car:
         p2 = math.sin(self.schraeglaufwinkel())
 
         return math.degrees(p1*p2)
+# probe

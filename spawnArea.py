@@ -46,3 +46,4 @@ class spawnArea:
         elif not hmm and pixel_color != (190,190,190,255):
             pygame.draw.rect(self.selfScreen, "grey", (self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1))
             self.screen.blit(self.selfScreen, (0,0))
+            # probe

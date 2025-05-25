@@ -128,3 +128,4 @@ class Polygon:
             self.draw_polygon_2(self.screen)
         else:
             print("Polygon nicht gespeichert")          # Debug
+# probe

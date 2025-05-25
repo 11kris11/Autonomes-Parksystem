@@ -185,15 +185,19 @@ class automation:
             if len(self.twoClosest) == 2:
                 self.lineDistance = math.dist(self.twoClosest[0], self.twoClosest[1])
                 if self.twoClosest[0][0] == self.twoClosest[1][0]:
-                    y = (min(self.twoClosest[0][1], self.twoClosest[1][1])
-                        + self.lineDistance / 2)
+                    y = (
+                        min(self.twoClosest[0][1], self.twoClosest[1][1])
+                        + self.lineDistance / 2
+                    )
                     if self.car.surfaceX > self.twoClosest[0][0]:
                         x = self.twoClosest[0][0] - self.polygon.parkingSpaceWidth / 2
                     elif self.car.surfaceX < self.twoClosest[0][0]:
                         x = self.twoClosest[0][0] + self.polygon.parkingSpaceWidth / 2
                 elif self.twoClosest[0][1] == self.twoClosest[1][1]:
-                    x = (min(self.twoClosest[0][0], self.twoClosest[1][0])
-                        + self.lineDistance / 2)
+                    x = (
+                        min(self.twoClosest[0][0], self.twoClosest[1][0])
+                        + self.lineDistance / 2
+                    )
                     if self.car.surfaceY > self.twoClosest[0][1]:
                         y = self.twoClosest[0][1] - self.polygon.parkingSpaceLength / 2
                     elif self.car.surfaceY < self.twoClosest[0][1]:

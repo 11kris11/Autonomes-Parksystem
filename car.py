@@ -15,13 +15,12 @@ class Car:
     angle = 0  # Aktueller Lenkwinkel der Vorderräder
     maxAngle = 45  # Maximaler Lenkeinschlag in Grad
 
-    def __init__(self, x, y, direction, screen, color, color2):
+    def __init__(self, x, y, color, color2):
         # Positionsparameter
         self.x = x  # X-Koordinate des Autos auf der Surface
         self.y = y  # Y-Koordinate des Autos auf der Surface
         self.color = color  # Hauptfarbe des Autos (für den Körper)
         self.color2 = color2  # Sekundärfarbe (für das Dach)
-        self.screen = screen  # Surface, auf der das Auto gezeichnet wird
         self.center = (x, y)  # Zentrum des Autos (wird für Rotationen verwendet)
 
         # Bewegungsparameter

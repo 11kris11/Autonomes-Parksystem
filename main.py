@@ -117,7 +117,7 @@ def createPolygon():
 
 def initcar():
     # Erstellt ein neues Auto-Objekt mit Standardeigenschaften
-    car = Car(0, 0, "right", carSurface, "blue", "darkgrey")
+    car = Car(0, 0, "blue", "darkgrey")
     # Berechnet die Mittelposition des Autos auf der Surface
     car.center = (
         carSurface.get_rect().center[0] - car.car_length / 2,

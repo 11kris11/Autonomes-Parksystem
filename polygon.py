@@ -147,8 +147,7 @@ class Polygon:
                     car = Car(
                         parkingSpacesX[1],
                         parkingSpacesY[self.toFill - 4],
-                        direction,
-                        surface,
+
                         carColor,
                         roofColor,
                     )
@@ -158,8 +157,6 @@ class Polygon:
                     car = Car(
                         parkingSpacesX[0],
                         parkingSpacesY[self.toFill],
-                        direction,
-                        surface,
                         carColor,
                         roofColor,
                     )
@@ -172,8 +169,6 @@ class Polygon:
                     car = Car(
                         parkingSpacesX[self.toFill - 4],
                         parkingSpacesY[1],
-                        direction,
-                        surface,
                         carColor,
                         roofColor,
                     )
@@ -184,8 +179,6 @@ class Polygon:
                     car = Car(
                         parkingSpacesX[self.toFill],
                         parkingSpacesY[0],
-                        direction,
-                        surface,
                         carColor,
                         roofColor,
                     )

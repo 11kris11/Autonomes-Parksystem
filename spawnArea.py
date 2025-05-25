@@ -1,7 +1,5 @@
 import pygame
 
-from car import Car
-
 
 # Diese Klasse definiert den Bereich, in dem das Auto zu Beginn erscheint
 # und bietet Funktionen zum Anzeigen dieses Bereichs während des Spiels

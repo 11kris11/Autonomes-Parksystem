@@ -5,8 +5,6 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-from screens import Screens
-
 
 class automation:
     def __init__(self, car, polygon, screen, carSurface):
@@ -48,14 +46,14 @@ class automation:
             self.grid = Grid(matrix=self.matrix)
 
     def createMask(self, surface, color=None, treshold=127):
-        if color == None:
+        if color is None:
             mask = pygame.mask.from_surface(surface, treshold)
         else:
             mask = pygame.mask.from_threshold(surface, color, treshold)
         return mask
 
     def detectCollision(self, screen, carRect):
-        if screen == None or self.carSurface == None or carRect == None:
+        if screen is None or self.carSurface is None or carRect is None:
             return None
         mask1 = self.createMask(screen)
         mask2 = self.createMask(self.carSurface)
@@ -187,30 +185,18 @@ class automation:
             if len(self.twoClosest) == 2:
                 self.lineDistance = math.dist(self.twoClosest[0], self.twoClosest[1])
                 if self.twoClosest[0][0] == self.twoClosest[1][0]:
+                    y = (min(self.twoClosest[0][1], self.twoClosest[1][1])
+                        + self.lineDistance / 2)
                     if self.car.surfaceX > self.twoClosest[0][0]:
                         x = self.twoClosest[0][0] - self.polygon.parkingSpaceWidth / 2
-                        y = (
-                            min(self.twoClosest[0][1], self.twoClosest[1][1])
-                            + self.lineDistance / 2
-                        )
                     elif self.car.surfaceX < self.twoClosest[0][0]:
                         x = self.twoClosest[0][0] + self.polygon.parkingSpaceWidth / 2
-                        y = (
-                            min(self.twoClosest[0][1], self.twoClosest[1][1])
-                            + self.lineDistance / 2
-                        )
                 elif self.twoClosest[0][1] == self.twoClosest[1][1]:
+                    x = (min(self.twoClosest[0][0], self.twoClosest[1][0])
+                        + self.lineDistance / 2)
                     if self.car.surfaceY > self.twoClosest[0][1]:
-                        x = (
-                            min(self.twoClosest[0][0], self.twoClosest[1][0])
-                            + self.lineDistance / 2
-                        )
                         y = self.twoClosest[0][1] - self.polygon.parkingSpaceLength / 2
                     elif self.car.surfaceY < self.twoClosest[0][1]:
-                        x = (
-                            min(self.twoClosest[0][0], self.twoClosest[1][0])
-                            + self.lineDistance / 2
-                        )
                         y = self.twoClosest[0][1] + self.polygon.parkingSpaceLength / 2
             if x != 0 and y != 0 and y != 449.5:
                 self.x = x

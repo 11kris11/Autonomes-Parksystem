@@ -178,7 +178,7 @@ while running:
     screen.fill((0, 0, 0, 0))
     # Schaue ob es eine kollision gab und falls ja Stop das Spiel
     col = automation.detectCollision(parkedSurface, carSurface_rotated_rect)
-    if col != None:
+    if col is not None:
         running = False
     getKeyInput()  # Schau ob es ein Key Input gab und reagiere
     spawnArea_instance.showSpawn(showSpawn)

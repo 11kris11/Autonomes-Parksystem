@@ -1,5 +1,5 @@
 import random
-
+from typing import List
 import pygame
 
 from car import Car
@@ -8,7 +8,7 @@ from car import Car
 class Polygon:
     screen = None
     toFill = 7
-    cars = []
+    cars: List[Car] = []
 
     def __init__(self, screen, width, height, polNum):
         self.height = height
@@ -141,7 +141,7 @@ class Polygon:
             while roofColor == carColor:
                 roofColor = colors[random.randint(0, len(colors) - 1)]
 
-            if self.selectedPolygon == 1 and not self.toFill in filled:
+            if self.selectedPolygon == 1 and self.toFill not in filled:
                 filled.append(self.toFill)
                 if self.toFill >= 4:
                     car = Car(
@@ -166,7 +166,7 @@ class Polygon:
                     car.draw_parked_car(surface)
                     self.cars.append(car.getCarRect())
 
-            if self.selectedPolygon == 2 and not self.toFill in filled:
+            if self.selectedPolygon == 2 and self.toFill not in filled:
                 filled.append(self.toFill)
                 if self.toFill >= 4:
                     car = Car(

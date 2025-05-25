@@ -29,7 +29,7 @@ clock = pygame.time.Clock()
 ellipse = pygame.Rect(0, 0, 550, 450)
 cameraColor = (173, 216, 230, 100)
 font = pygame.font.SysFont(None, 60)
-timer = None
+timer = 0
 
 # Screens und Surfaces
 screen = pygame.display.set_mode((width, height))

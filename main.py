@@ -1,7 +1,6 @@
 import random
 
 import pygame
-
 from automation import automation
 from car import Car
 from polygon import Polygon

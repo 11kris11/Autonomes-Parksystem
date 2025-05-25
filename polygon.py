@@ -2,7 +2,6 @@ import random
 from typing import List
 
 import pygame
-
 from car import Car
 
 

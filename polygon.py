@@ -88,7 +88,7 @@ class Polygon:
             )
             pygame.draw.rect(screen, "white", vert1)
             pygame.draw.rect(screen, "white", vert2)
-        
+
     # Hier werden geparkte Autos zufällig einem Parkplatz zugeordnet
     def park_cars(self, surface):
         # Definition der Parkplätze

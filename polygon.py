@@ -88,9 +88,10 @@ class Polygon:
             )
             pygame.draw.rect(screen, "white", vert1)
             pygame.draw.rect(screen, "white", vert2)
-
+        
     # Hier werden geparkte Autos zufällig einem Parkplatz zugeordnet
     def park_cars(self, surface):
+        attribut = "wird nie benutzt"
         # Definition der Parkplätze
         parkingSpacesX = []  # Liste für die X-Koordinaten der Parkplätze
         parkingSpacesY = []  # Liste für die Y-Koordinaten der Parkplätze

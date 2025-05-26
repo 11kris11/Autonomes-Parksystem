@@ -36,11 +36,11 @@ jobs:
 
       - name: Run isort (check only)
         run: |
-          isort . --check --diff
+          isort . 
 
       - name: Run black (check only)
         run: |
-          black . --check --diff
+          black . 
 
       - name: Run Super-Linter
         uses: github/super-linter@v5

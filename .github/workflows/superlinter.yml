@@ -8,14 +8,20 @@ on:
 
 jobs:
   super-lint:
-    name: Lint code base
+    name: Format & Lint code base
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 1  
+          persist-credentials: false  # disable default token
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -28,16 +34,30 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install Dependencies
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Run isort (check only)
+          pip install black isort
+
+      - name: Run isort
+        run: isort .
+
+      - name: Run black
+        run: black .
+
+      - name: Commit changes if needed
         run: |
-          isort . 
-      - name: Run black (check only)
-        run: |
-          black . 
+          git status
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -m "chore: auto-format with black and isort"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          else
+            echo "No changes to commit"
+          fi
+
       - name: Run Super-Linter
         uses: github/super-linter@v5
         env:

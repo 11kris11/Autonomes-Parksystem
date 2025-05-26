@@ -47,16 +47,19 @@ jobs:
       - name: Run black
         run: black .
 
-      - name: Commit changes if needed
+      - name: Commit formatting changes
         run: |
-          git status
           if [[ $(git status --porcelain) ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git pull --rebase
             git add .
             git commit -m "chore: auto-format with black and isort"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+            git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:main
           else
             echo "No changes to commit"
           fi
+
 
       - name: Run Super-Linter
         uses: github/super-linter@v5

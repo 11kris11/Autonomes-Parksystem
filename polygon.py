@@ -95,7 +95,6 @@ class Polygon:
         parkingSpacesX = []  # Liste für die X-Koordinaten der Parkplätze
         parkingSpacesY = []  # Liste für die Y-Koordinaten der Parkplätze
         colors = [
-
             "pink",
             "brown",
             "black",
@@ -146,7 +145,6 @@ class Polygon:
                     car = Car(
                         parkingSpacesX[1],
                         parkingSpacesY[self.toFill - 4],
-
                         carColor,
                         roofColor,
                     )

@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 from car import Car  # Pfad zu deiner Car-Klasse anpassen
 
+
 def test_move_forward_velocity_and_move_called():
     car = Car(0, 0, "black", "white")
     car.vel = 10
@@ -19,8 +20,9 @@ def test_move_forward_velocity_and_move_called():
     # move() wurde genau 1x aufgerufen
     car.move.assert_called_once()
 
+
 def test_move_forward_vel_below_max():
-    car = Car(0, 0 ,"black", "white")
+    car = Car(0, 0, "black", "white")
     car.vel = 5
     car.acceleration = 3
     car.max_vel = 20

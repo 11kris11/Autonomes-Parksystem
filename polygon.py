@@ -88,14 +88,14 @@ class Polygon:
             )
             pygame.draw.rect(screen, "white", vert1)
             pygame.draw.rect(screen, "white", vert2)
-
+        
     # Hier werden geparkte Autos zufällig einem Parkplatz zugeordnet
     def park_cars(self, surface):
         # Definition der Parkplätze
         parkingSpacesX = []  # Liste für die X-Koordinaten der Parkplätze
         parkingSpacesY = []  # Liste für die Y-Koordinaten der Parkplätze
-        directions = ["left", "right"]  # Mögliche Ausrichtungen der geparkten Autos
         colors = [
+
             "pink",
             "brown",
             "black",
@@ -133,7 +133,6 @@ class Polygon:
         ammountToFill = random.randint(3, 7)
         filled = []
         for i in range(ammountToFill):
-            direction = directions[random.randint(0, 1000) % 2]
             while self.toFill in filled:
                 self.toFill = random.randint(0, 1000) % 8
             carColor = colors[random.randint(0, len(colors) - 1)]

@@ -1,0 +1,4 @@
+black
+isort
+pygame
+pytest

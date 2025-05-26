@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-import pytest
 
 from car import Car  # Pfad zu deiner Car-Klasse anpassen
 

@@ -133,7 +133,6 @@ class Polygon:
         ammountToFill = random.randint(3, 7)
         filled = []
         for i in range(ammountToFill):
-            direction = directions[random.randint(0, 1000) % 2]
             while self.toFill in filled:
                 self.toFill = random.randint(0, 1000) % 8
             carColor = colors[random.randint(0, len(colors) - 1)]

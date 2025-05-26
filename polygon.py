@@ -95,6 +95,7 @@ class Polygon:
         parkingSpacesX = []  # Liste für die X-Koordinaten der Parkplätze
         parkingSpacesY = []  # Liste für die Y-Koordinaten der Parkplätze
         colors = [
+
             "pink",
             "brown",
             "black",

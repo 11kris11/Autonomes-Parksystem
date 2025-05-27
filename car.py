@@ -73,8 +73,10 @@ class Car:
                 self.x + self.car_length * 4 / 5,
                 self.y + self.car_width / 2,
             )
-            self.rearTireCenter = (self.x + self.car_length * 1 / 5,
-                self.y + self.car_width / 2,)
+            self.rearTireCenter = (
+                self.x + self.car_length * 1 / 5,
+                self.y + self.car_width / 2,
+            )
 
             pygame.draw.rect(
                 screen,

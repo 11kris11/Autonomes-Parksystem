@@ -213,12 +213,9 @@ while running:
         rendered_text = font.render(text, True, (0, 0, 0))
         screen.blit(rendered_text, (50, 20))
     else:
-
         auto.showMsg = False
-
     screen.blit(
-        carSurface_rotated, carSurface_rotated_rect
-    )  # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+        carSurface_rotated, carSurface_rotated_rect)  # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
     auto.update(screen)
     pygame.display.flip()
 gameOver()  # Zeige Game Over an

@@ -39,7 +39,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          if [[ `git status --porcelain` ]]; then
+          if [[ $(git status --porcelain) ]]; then
             git add .
             git commit -m "chore: auto-format with black and isort"
             git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:main

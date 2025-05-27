@@ -160,7 +160,7 @@ class Polygon:
                     car.draw_parked_car(surface)
                     self.cars.append(car.getCarRect())
 
-            if self.selectedPolygon == 2 and self.toFill not in filled:
+            if self.selectedPolygon is 2 and self.toFill not in filled:
                 filled.append(self.toFill)
                 if self.toFill >= 4:
                     car = Car(

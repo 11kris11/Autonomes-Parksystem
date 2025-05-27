@@ -195,8 +195,7 @@ while running:
         carSurface, car.gierwinkel
     )  # Rotieren das Surface, falls nötig (Lenkung)
     carSurface_rotated_rect = carSurface_rotated.get_rect(
-        center=(car.surfaceX, car.surfaceY)
-    )  # Zentrum das Autos
+        center=(car.surfaceX, car.surfaceY))  # Zentrum das Autos
     auto.carSurface = carSurface_rotated
     # Alles auf den Mainn Screen zeichnen
     polygonScreen.blit(parkedSurface, (0, 0))

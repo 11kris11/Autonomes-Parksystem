@@ -195,7 +195,8 @@ while running:
         carSurface, car.gierwinkel
     )  # Rotieren das Surface, falls nötig (Lenkung)
     carSurface_rotated_rect = carSurface_rotated.get_rect(
-        center=(car.surfaceX, car.surfaceY))  # Zentrum das Autos
+        center=(car.surfaceX, car.surfaceY)
+    )  # Zentrum das Autos
     auto.carSurface = carSurface_rotated
     # Alles auf den Mainn Screen zeichnen
     polygonScreen.blit(parkedSurface, (0, 0))
@@ -214,7 +215,9 @@ while running:
     else:
         auto.showMsg = False
 
-    screen.blit(carSurface_rotated, carSurface_rotated_rect)  # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
+    screen.blit(
+        carSurface_rotated, carSurface_rotated_rect
+    )  # Anzeigen der Surface mit der mitte vom Auto, um die rotation mittig zu halten
     auto.update(screen)
     pygame.display.flip()
 gameOver()  # Zeige Game Over an

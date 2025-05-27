@@ -34,3 +34,21 @@ jobs:
 
       - name: Run formatters
         run: |
+          black .
+          isort .
+
+      - name: Commit and push formatting changes if any
+        run: |
+          if [[ $(git status --porcelain) ]]; then
+            git add .
+            git commit -m "chore: auto-format with black and isort"
+            git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git HEAD:main
+          else
+            echo "No formatting changes to commit"
+          fi
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -205,6 +205,7 @@ while running:
         if auto.parkingSpaceRect.contains(car.body):
             auto.color = "green"
         else:
+
             auto.color = "red"
         pygame.draw.rect(screen, auto.color, auto.parkingSpaceRect)
     if auto.showMsg and timer < 300:
